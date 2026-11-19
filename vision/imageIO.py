@@ -44,6 +44,9 @@ def saveImage(outputPath,image):
             outputPath: 输出图片路径（使用pathlib的Path）
             image: OpenCV能处理的图片矩阵
         """
+    #若路径中的父级目录不存在就自己创建一个
+    outputPath.mkdir(parents=True, exist_ok=True)
+
     #同上，由于不支持中文，故不能用 saved = cv2.imwrite(str(outputPath), image)
     success, buffer = cv2.imencode('.png', image)  # 用imencode把图片数据在内存中编码为png格式的二进制数据buffer
 
