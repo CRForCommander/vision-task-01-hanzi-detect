@@ -4,8 +4,8 @@
 用于设置一些常用量
 
 Author: CRForCommander
-Date: 2026/11/19
-Version: 1.0.0
+Date: 2026/11/21
+Version: 1.0.1
 """
 from pathlib import Path
 
@@ -28,3 +28,6 @@ RED_UPPER_2 = (180, 255, 255)
 #蓝色范围
 BLUE_LOWER = (100, 60, 40)
 BLUE_UPPER = (140, 255, 255)
+
+# 编号对应表
+MAPPING_PATH = PROJECT_DIR / "mapping.csv"
