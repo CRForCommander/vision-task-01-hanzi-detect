@@ -12,13 +12,16 @@ import cv2
 from config import (
     INPUT_IMAGE_DIR,
     OUTPUT_DIR,
-    MAPPING_PATH
+    MAPPING_PATH,
+    TEMPLATE_DIR
 )
+from vision.templateMatcher import recognizeCells
 from vision.cellDetector import (
     cleanMask,
     detectCells
 )
 from vision.cellSorter import sortAndLabelCells
+from vision.characterProcessor import createCharacterTemplates
 from vision.colorSegmentation import (
     createColorMasks,
     extractColorRegion
@@ -29,7 +32,9 @@ from vision.imageIO import (
 )
 from vision.mappingIO import saveMapping
 from vision.visualizer import (
-    drawCell
+    createTemplateOverview,
+    drawCell,
+    drawRecognitionResults,
 )
 
 def printCells(color, cells):
@@ -61,6 +66,10 @@ def main():
     redRegion = extractColorRegion(image, redMask)
     blueRegion = extractColorRegion(image, blueMask)
 
+    # 保存干净掩膜图片
+    saveImage(OUTPUT_DIR / "red_region.png", redRegion)
+    saveImage(OUTPUT_DIR / "blue_region.png", blueRegion)
+
     # 清理掩膜
     cleanedRedMask = cleanMask(redMask)
     cleanedBlueMask = cleanMask(blueMask)
@@ -91,8 +100,94 @@ def main():
     # 保存编号图
     saveImage(OUTPUT_DIR / "labeled_image.png", labeledImage)
 
-    # 显示图片
-    cv2.imshow("Labeled Cells", labeledImage)
+    # 生成字符模板
+    redTemplates = createCharacterTemplates(
+        image,
+        redCells
+    )
+
+    blueTemplates = createCharacterTemplates(
+        image,
+        blueCells
+    )
+
+    # 把两个字符模板字典合并为一个字典
+    templates = redTemplates | blueTemplates
+
+    # 保存30张独立字符模板
+    for cellId, template in templates.items():
+        templatePath = TEMPLATE_DIR / f"{cellId}.png"
+        saveImage(templatePath, template)
+
+    # 使用模板匹配识别字符
+    redResults = recognizeCells(
+        image,
+        redCells,
+        templates,
+        templatePrefix="R"
+    )
+
+    blueResults = recognizeCells(
+        image,
+        blueCells,
+        templates,
+        templatePrefix="B"
+    )
+
+    recognitionResults = redResults + blueResults
+
+    # 打印识别结果
+    print("\n识别结果：")
+
+    for result in recognitionResults:
+        expectedId = result["id"]
+        recognizedId = result["recognizedId"]
+        matchScore = result["matchScore"]
+
+        print(
+            f"位置编号 {expectedId} → "
+            f"识别编号 {recognizedId}，"
+            f"相似度 {matchScore:.4f}"
+        )
+
+    correctCount = sum(
+        result["isCorrect"]
+        for result in recognitionResults
+    )
+
+    print(
+        f"\n识别正确数量："
+        f"{correctCount}/{len(recognitionResults)}"
+    )
+
+    # 绘制并保存识别结果
+    recognitionImage = drawRecognitionResults(
+        image,
+        recognitionResults
+    )
+
+    saveImage(
+        OUTPUT_DIR / "recognitionResult.png",
+        recognitionImage
+    )
+
+    # 生成并保存模板总览图
+    templateOverview = createTemplateOverview(templates)
+
+    saveImage(OUTPUT_DIR / "templateOverview.png", templateOverview)
+
+    print("识别结果图：", OUTPUT_DIR / "recognitionResult.png")
+    print("模板总览图：", OUTPUT_DIR / "templateOverview.png")
+
+    # 显示结果
+    cv2.imshow(
+        "Recognition Result",
+        recognitionImage
+    )
+    cv2.imshow(
+        "Character Templates",
+        templateOverview
+    )
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 

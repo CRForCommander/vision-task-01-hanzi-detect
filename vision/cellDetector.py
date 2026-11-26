@@ -4,7 +4,7 @@
 清理掩膜、查找轮廓、过滤噪点、提取格子
 
 Author: CRForCommander
-Date: 2026/11/20
+Date: 2026/11/23
 Version: 1.0.0
 """
 import cv2
@@ -48,8 +48,8 @@ def detectCells(mask):
     mask =cv2.bitwise_not(mask)
 
     # 如果是三通道图片，转为单通道。cv2.findContours只支持单通道
-    if len(mask.shape) == 3:
-        mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
+    #if len(mask.shape) == 3:
+    #    mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
 
     # 扫描图片，寻找所有白色连通区域的轮廓线，得到它们的形状和坐标
     # contours（轮廓列表）：一个包含所有轮廓的列表。每个元素就是一个白色格子的边界点坐标

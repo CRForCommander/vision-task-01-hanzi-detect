@@ -1,3 +1,14 @@
+"""
+字符格子编号模块
+
+排列格子，并分配正式编号
+
+Author: CRForCommander
+Date: 2026/11/20
+Version: 1.0.0
+"""
+
+
 def sortAndLabelCells(cells, prefix, color):
     """
     将检测出的15个格子排列成三行五列，并分配正式编号

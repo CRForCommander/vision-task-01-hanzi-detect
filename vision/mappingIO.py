@@ -1,3 +1,12 @@
+"""
+CSV表格读取写入模块
+
+用于保存格子信息为CSV表格
+
+Author: CRForCommander
+Date: 2026/11/23
+Version: 1.0.0
+"""
 import csv
 from pathlib import Path
 
