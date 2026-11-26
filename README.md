@@ -66,16 +66,16 @@ vision_task1/
 ├── templates/
 ├── output/
 └── vision/
-    ├── image_io.py
-    ├── color_segmentation.py
-    ├── cell_detector.py
-    ├── cell_sorter.py
-    ├── character_processor.py
-    ├── template_matcher.py
-    ├── mapping_io.py
+    ├── imageIo.py
+    ├── colorSegmentation.py
+    ├── cellDetector.py
+    ├── cellSorter.py
+    ├── characterProcessor.py
+    ├── templateMatcher.py
+    ├── mappingIo.py
     └── visualizer.py
 ```
 
 ## 实现说明
 
-本项目针对题目给定的固定图片设计，使用 OpenCV 完成识别，不需要训练 YOLO 模型。字符模板中的白色表示用于计算的字符轮廓特征，黑色表示背景，不代表字符在原图中的实际颜色。
+本项目只针对题目给定的固定图片设计，使用 OpenCV 完成识别。
