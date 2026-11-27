@@ -13,20 +13,20 @@ import numpy as np
 
 def extractWhiteMask(cellImage):
     """
-    从单个彩色格子中提取字符白色轮廓
+    将单个彩色格子图转换为单个格子字符的白色轮廓黑白图
 
     :param cellImage: 单个格子的图片
-    :return: 从单个格子中提取的字符白色轮廓
+    :return: 单个格子字符的白色轮廓黑白图
     """
     # 图片转为HSV格式
-    cellHsv = cv2.cvtColor(
+    cellHSV = cv2.cvtColor(
         cellImage,
         cv2.COLOR_BGR2HSV
     )
 
     # 白色轮廓：低饱和度、高明度
     whiteMask = cv2.inRange(
-        cellHsv,
+        cellHSV,
         (0, 0, 150),
         (180, 90, 255)
     )
@@ -36,10 +36,10 @@ def extractWhiteMask(cellImage):
 
 def cropCharacter(whiteMask):
     """
-    裁剪出所有白色轮廓共同占据的矩形范围
+    裁剪出所有白色轮廓共同占据的矩形范围（相比于whiteMask更精确，因为whiteMask是整个格子而不是只是包含字符）
 
-    :param whiteMask: 白色轮廓
-    :return: <UNK>
+    :param whiteMask: 单个格子字符的白色轮廓黑白图
+    :return: 单个字符白色轮廓图片
     """
     # 提取二值图像所有白色（非0）像素坐标
     whitePoints = cv2.findNonZero(whiteMask)

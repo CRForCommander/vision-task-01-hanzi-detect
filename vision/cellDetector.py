@@ -47,10 +47,6 @@ def detectCells(mask):
     # 反转掩膜，使字符变黑色，背景变白色，否则直接用会提取一个包含所有字符的超大外框，而不是一个独立字符
     mask =cv2.bitwise_not(mask)
 
-    # 如果是三通道图片，转为单通道。cv2.findContours只支持单通道
-    #if len(mask.shape) == 3:
-    #    mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
-
     # 扫描图片，寻找所有白色连通区域的轮廓线，得到它们的形状和坐标
     # contours（轮廓列表）：一个包含所有轮廓的列表。每个元素就是一个白色格子的边界点坐标
     # hierarchy（层级关系）：记录轮廓直接谁套着谁的关系。不过由于这里使用cv2.RETR_EXTERNAL(只提取最外层)，所以没用
